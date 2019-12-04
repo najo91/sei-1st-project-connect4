@@ -113,6 +113,8 @@ class Connect4 {
         checkDirection (directionB);
         if (total >= 4) {
           return that.player;
+        } else if (total == 0) {
+          alert (`game over, it's a tie!`)
         } else {
           return null;
         }
@@ -134,9 +136,14 @@ class Connect4 {
       return checkWin ({i: 0, j: -1}, {i: 0, j: 1});
     }
 
+    function checkForTie() {
+      return checkWin ({i: 0, j: 0}, {i: 0, j: 0});
+    }
+
     return checkVerticals () ||
         checkHorizontals () ||
         checkDiagonalBLtoTR () ||
+        checkForTie () ||
         checkDiagonalTLtoBR ();
   }
 
