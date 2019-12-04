@@ -1,4 +1,4 @@
-
+// declare a class ..
 class Connect4 {
   constructor (selector) {
     this.ROWS = 4;
@@ -10,20 +10,20 @@ class Connect4 {
     this.createGrid();
     this.setupEventListeners();
   }
-
+// function for create a board grid ..
   createGrid () {
     const $board = $(this.selector);
     $board.empty ();
-    this.isGameOver = false;
+    this.isGameOver = false; // to stop the entract with board when its over ..
     this.player = 'red';
-    for (let row = 0; row < this.ROWS; row ++) {
+    for (let row = 0; row < this.ROWS; row ++) { // to create a rows in grid ..
       const $row = $('<div>')
       .addClass ('row');
-      for (let col = 0; col < this.COLS; col ++) {
+      for (let col = 0; col < this.COLS; col ++) { // to create a columns inside each row ..
         const $col = $('<div>')
         .addClass ('col empty')
         .attr ('data-col', col)
-        .attr ('data-row', row);
+        .attr ('data-row', row); // to set a value for each slot ..
         $row.append ($col);
       }
       $board.append($row);
@@ -34,7 +34,7 @@ class Connect4 {
     const $board = $(this.selector);
     const that = this;
 
-    function findLastEmptyCell (col) {
+    function findLastEmptyCell (col) { // to find the last empty slot ..
       const cells = $(`.col[data-col=${col}]`);
       for (let n = cells.length - 1; n >= 0; n --) {
         const $cell = $(cells[n]);
@@ -45,37 +45,37 @@ class Connect4 {
       return null;
     }
 
-    $board.on ('mouseenter', '.col.empty', function (){
+    $board.on ('mouseenter', '.col.empty', function (){ // mouseenter event for hovering effect ..
       if (that.isGameOver) return;
       const col = $(this).data ('col');
       const $lastEmptyCell = findLastEmptyCell (col);
       $lastEmptyCell.addClass (`next-${that.player}`);
     });
 
-    $board.on ('mouseleave', '.col', function () {
+    $board.on ('mouseleave', '.col', function () { // mouseleave event fo hovering effect ..
       $('.col').removeClass (`next-${that.player}`);
     });
 
-    $board.on ('click', '.col.empty', function () {
+    $board.on ('click', '.col.empty', function () { // click event to ineract with board ..
       if (that.isGameOver) return;
       const col = $(this).data ('col');
       const $lastEmptyCell = findLastEmptyCell (col);
       $lastEmptyCell.removeClass (`empty next-${that.player}`);
       $lastEmptyCell.addClass (that.player);
-      $lastEmptyCell.data ('player', that.player);
+      $lastEmptyCell.data ('player', that.player); // to safely store the which color in which slot ..
 
       const winner = that.checkForWinner (
         $lastEmptyCell.data ('row'),
         $lastEmptyCell.data ('col')
       )
-      if (winner) {
+      if (winner) { // ending the game and announce the winner ..
         that.isGameOver = true;
-        alert (`game over ${that.player} wins!`)
+        alert (`game over, ${that.player} wins!`)
         $('.col.empty').removeClass ('empty');
         return;
       }
 
-      that.player = (that.player === 'red') ? 'yellow' : 'red';
+      that.player = (that.player === 'red') ? 'yellow' : 'red'; // to alternate between the two players ..
       that.onPlayerMove ();
       $(this).trigger ('mouseenter');
     });
@@ -89,16 +89,16 @@ class Connect4 {
     }
 
 
-    function checkDirection (direction) {
+    function checkDirection (direction) { // a function to determine checking direction ..
       let total = 0;
       let i = row + direction.i;
       let j = col + direction.j;
       let $next = $getCell (i, j);
-      while (i >= 0 &&
-      i < that.ROWS &&
-      j >= 0 &&
-      j < that.COLS &&
-      $next.data ('player') === that.player) {
+      while (i >= 0
+      && i < that.ROWS
+      && j >= 0
+      && j < that.COLS
+      && $next.data ('player') === that.player) {
         total ++;
         i += direction.i;
         j += direction.j;
@@ -107,7 +107,7 @@ class Connect4 {
       return total;
     }
 
-    function checkWin (directionA, directionB) {
+    function checkWin (directionA, directionB) { // dirA UP, and dirB DOWN ..
       const total = 1 +
         checkDirection (directionA) +
         checkDirection (directionB);
@@ -118,29 +118,29 @@ class Connect4 {
         }
     }
 
-    function checkDiagonalBLtoTR () {
+    function checkDiagonalBLtoTR () { // diagonal checking method ..
       return checkWin ({i: 1, j: -1}, {i: 1, j: 1});
     }
 
-    function checkDiagonalTLtoBR () {
+    function checkDiagonalTLtoBR () { // diagonal checking method ..
       return checkWin ({i: 1, j: 1}, {i: -1, j: -1});
     }
 
-    function checkVerticals () {
+    function checkVerticals () { // vertical checking method ..
       return checkWin ({i: -1, j: 0}, {i: 1, j: 0});
     }
 
-    function checkHorizontals () {
+    function checkHorizontals () { // horizontal cheching method ..
       return checkWin ({i: 0, j: -1}, {i: 0, j: 1});
     }
 
-    return checkVerticals () ||
-        checkHorizontals () ||
-        checkDiagonalBLtoTR () ||
-        checkDiagonalTLtoBR ();
+    return checkVerticals ()
+        || checkHorizontals ()
+        || checkDiagonalBLtoTR ()
+        || checkDiagonalTLtoBR ();
   }
 
-  restart () {
+  restart () { // restarting the game without refreshing the page method ..
     this.createGrid ();
     this.onPlayerMove ();
   }
