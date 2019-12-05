@@ -112,14 +112,14 @@ class Connect4 {
         checkDirection (directionA) +
         checkDirection (directionB);
         if (total >= 4) {
-          return that.player;
+          return true;
         } else {
-          return null;
+          return false;
         }
     }
 
     function checkDiagonalBLtoTR () { // diagonal checking method ..
-      return checkWin ({i: 1, j: -1}, {i: 1, j: 1});
+      return checkWin ({i: -1, j: -1}, {i: 1, j: 1});
     }
 
     function checkDiagonalTLtoBR () { // diagonal checking method ..
