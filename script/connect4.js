@@ -68,10 +68,16 @@ class Connect4 {
         $lastEmptyCell.data ('row'),
         $lastEmptyCell.data ('col')
       )
+      if (!$('.col.empty')[0]) {
+        that.isGameOver = true;
+      }
       if (winner) { // ending the game and announce the winner ..
         that.isGameOver = true;
         alert (`game over, ${that.player} wins!`)
         $('.col.empty').removeClass ('empty');
+        return;
+      } else if (that.isGameOver) {
+        alert (`game over, TIE!`)
         return;
       }
 
